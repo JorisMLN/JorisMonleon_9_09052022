@@ -170,6 +170,10 @@ export default class {
     }
 
     bills.forEach(bill => {
+      //remove l'event
+      $(`#open-bill${bill.id}`).unbind('click');
+
+      //ajout l'event
       $(`#open-bill${bill.id}`).click((e) => {
         this.handleEditTicket(e, bill, bills)
       })
@@ -178,8 +182,6 @@ export default class {
 
     return bills
   }
-
-
 
   getBillsAllUsers = () => {
     if (this.store) {

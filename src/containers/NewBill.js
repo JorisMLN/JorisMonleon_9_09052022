@@ -23,11 +23,13 @@ export default class NewBill {
     const MIME_file = this.document.querySelector(`input[data-testid="file"]`).files[0].name.split('.')[1];
     console.log(MIME_file)
 
-    if (MIME_file != 'jpg' && MIME_file != 'jpeg' && MIME_file != 'png') {
+    const exceptedMime = ['jpg', 'jpeg', 'png'];
+
+    if (!exceptedMime.includes(MIME_file)) {
       console.log(' oh no ! ');
       console.log(e.srcElement.value)
       e.srcElement.value = '';
-      document.getElementById('alertFormat').innerHTML = 'Format atendu: jpg, jpeg, png';
+      document.getElementById('alertFormat').innerHTML = `format attendu: ${exceptedMime.join(", ")}`;
 
     } else {
       document.getElementById('alertFormat').innerHTML = '';
