@@ -18,47 +18,43 @@ export default class NewBill {
   }
 
   handleChangeFile = e => {
+    console.log(e)
     e.preventDefault()
 
     const MIME_file = this.document.querySelector(`input[data-testid="file"]`).files[0].name.split('.')[1];
     console.log(MIME_file)
-
     const exceptedMime = ['jpg', 'jpeg', 'png'];
 
     if (!exceptedMime.includes(MIME_file)) {
-      console.log(' oh no ! ');
-      console.log(e.srcElement.value)
-      e.srcElement.value = '';
-      document.getElementById('alertFormat').innerHTML = `format attendu: ${exceptedMime.join(", ")}`;
-
-    } else {
-      document.getElementById('alertFormat').innerHTML = '';
-
-      const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-      const filePath = e.target.value.split(/\\/g)
-      const fileName = filePath[filePath.length - 1]
-
-      const formData = new FormData()
-      const email = JSON.parse(localStorage.getItem("user")).email
-      formData.append('file', file)
-      formData.append('email', email)
-
-      this.store
-        .bills()
-        .create({
-          data: formData,
-          headers: {
-            noContentType: true
-          }
-        })
-        .then(({ fileUrl, key }) => {
-          console.log(fileUrl)
-          this.billId = key
-          this.fileUrl = fileUrl
-          this.fileName = fileName
-        })
-        .catch(error => console.error(error))
+      return wrongMime(e.srcElement.value)
     }
+
+    document.getElementById('alertFormat').innerHTML = '';
+
+    const file = this.document.querySelector(`input[data-testid="file"]`).files[0];
+    const filePath = e.target.value.split(/\\/g);
+    const fileName = filePath[filePath.length - 1];
+
+    const formData = new FormData();
+    const email = JSON.parse(localStorage.getItem("user")).email;
+    formData.append('file', file);
+    formData.append('email', email);
+
+    this.store
+      .bills()
+      .create({
+        data: formData,
+        headers: {
+          noContentType: true
+        }
+      })
+      .then(({ fileUrl, key }) => {
+        console.log(fileUrl)
+        this.billId = key
+        this.fileUrl = fileUrl
+        this.fileName = fileName
+      })
+      .catch(error => console.error(error))
   }
 
   handleSubmit = e => {
@@ -95,3 +91,11 @@ export default class NewBill {
     }
   }
 }
+
+export function wrongMime(value){
+  console.log(value);
+  document.getElementById('alertFormat').innerHTML = `format attendu: jpg, jpeg, png`;
+  return value = '';
+}
+
+

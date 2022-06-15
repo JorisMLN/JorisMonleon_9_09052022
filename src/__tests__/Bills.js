@@ -5,8 +5,10 @@
 import { screen, waitFor } from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
-import { ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
+import Bills, { default as BillsContainer } from '../containers/Bills';
+import userEvent from "@testing-library/user-event";
 
 import router from "../app/Router.js";
 
@@ -18,22 +20,63 @@ describe("Given I am connected as an employee", () => {
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
+
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
+
       router()
       window.onNavigate(ROUTES_PATH.Bills)
-      await waitFor(() => screen.getByTestId('icon-window'))
-      const windowIcon = screen.getByTestId('icon-window')
-      //to-do write expect expression
 
+      // recherche un element du DOM via son id
+      const windowIcon = screen.getByTestId('icon-window')
+
+      // to-do write expect expression
+      expect(windowIcon.classList.contains('active-icon')).toBe(true)
     })
+
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
       let dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
+    })
+
+    test('Then i click on newbills button it should trigger handleClickNewBill', () => {
+
+      const html = BillsUI({data: bills});
+      document.body.innerHTML = html;
+
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({pathname});
+      }
+      
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+
+      const container = new Bills({
+        document,
+        localStorage: window.localStorage,
+        onNavigate,
+        store: null
+      });
+
+      // recherche un element du DOM via son id
+      const newBillButton = screen.getByTestId('btn-new-bill');
+      const handleClickNewBill = jest.fn(container.handleClickNewBill);
+
+      newBillButton.addEventListener('click', handleClickNewBill);
+
+      userEvent.click(newBillButton);
+
+      expect(handleClickNewBill).toHaveBeenCalled();
+    })
+
+    test('tester le fait que la modale saffiche et que la bonne image est la. Et trigger le click su licon eye', ()=>{
+      
     })
   })
 })

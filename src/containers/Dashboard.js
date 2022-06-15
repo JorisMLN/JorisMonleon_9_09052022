@@ -89,16 +89,12 @@ export default class {
   }
 
   handleEditTicket(e, bill, bills) {
-    console.log(e)
 
     if (this.counter === undefined || this.id !== bill.id)
       this.counter = 0
 
     if (this.id === undefined || this.id !== bill.id)
       this.id = bill.id
-
-    console.log('this.id =>', this.id)
-    console.log('oldId =>', this.oldId)
 
     if (this.counter % 2 === 0 || this.id != this.oldId) {
       this.oldId = bill.id
@@ -112,7 +108,6 @@ export default class {
       $('.vertical-navbar').css({ height: '150vh' })
       this.counter++
 
-      console.log('test2');
     } else {
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
@@ -122,7 +117,6 @@ export default class {
       $('.vertical-navbar').css({ height: '120vh' })
       this.counter++
 
-      console.log('test3');
     }
     $('#icon-eye-d').click(this.handleClickIconEye)
     $('#btn-accept-bill').click((e) => this.handleAcceptSubmit(e, bill))
@@ -177,7 +171,6 @@ export default class {
       $(`#open-bill${bill.id}`).click((e) => {
         this.handleEditTicket(e, bill, bills)
       })
-      console.log('test');
     })
 
     return bills

@@ -27,6 +27,7 @@ export default class {
     $('#modaleFile').modal('show')
   }
 
+  // ne pas tester
   getBills = () => {
     if (this.store) {
       return this.store
