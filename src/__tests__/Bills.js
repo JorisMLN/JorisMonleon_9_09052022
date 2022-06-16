@@ -45,13 +45,13 @@ describe("Given I am connected as an employee", () => {
 
     test('Then i click on newbills button it should trigger handleClickNewBill', () => {
 
-      const html = BillsUI({data: bills});
+      const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
 
       const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({pathname});
+        document.body.innerHTML = ROUTES({ pathname });
       }
-      
+
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -75,8 +75,37 @@ describe("Given I am connected as an employee", () => {
       expect(handleClickNewBill).toHaveBeenCalled();
     })
 
-    test('tester le fait que la modale saffiche et que la bonne image est la. Et trigger le click su licon eye', ()=>{
-      
+    test('tester le fait que la modale saffiche et que la bonne image est la. Et trigger le click sur icon eye', () => {
+      const html = BillsUI({ data: bills });
+      document.body.innerHTML = html;
+
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee'
+      }))
+
+      const container = new Bills({
+        document,
+        localStorage: window.localStorage,
+        store: null
+      });
+
+      const modal = document.getElementById('modaleFile');
+      console.log(modal)
+      // document.body.append(modal);
+
+      const testButton = document.createElement('div');
+      testButton.setAttribute('data-bill-url', 'http://localhost:5678/public/76ef0769ff7679c6995dee2e1de4d769')
+      document.body.append(testButton);
+
+      const handleClickEye = jest.fn(container.handleClickIconEye);
+      testButton.addEventListener('click', function () { handleClickEye(testButton) });
+      userEvent.click(testButton);
+
+      console.log('test attribute ---------------->', modal.hasAttribute('class', 'show'))
+
+      expect(handleClickEye).toHaveBeenCalled();
+      expect(modal.hasAttribute('class', 'show')).toBe(true);
     })
   })
 })
