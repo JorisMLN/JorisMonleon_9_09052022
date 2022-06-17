@@ -91,16 +91,17 @@ describe("Given I am connected as an employee", () => {
       });
 
       const modal = document.getElementById('modaleFile');
-      console.log(modal)
-      // document.body.append(modal);
+      console.log(modal);
 
-      const testButton = document.createElement('div');
-      testButton.setAttribute('data-bill-url', 'http://localhost:5678/public/76ef0769ff7679c6995dee2e1de4d769')
-      document.body.append(testButton);
+      const eyeButton = screen.getAllByTestId('icon-eye')[0];
+      console.log('first eye btn --------->', eyeButton);
+
+      $.fn.modal = jest.fn();
+
 
       const handleClickEye = jest.fn(container.handleClickIconEye);
-      testButton.addEventListener('click', function () { handleClickEye(testButton) });
-      userEvent.click(testButton);
+      eyeButton.addEventListener('click', function () { handleClickEye(eyeButton) });
+      userEvent.click(eyeButton);
 
       console.log('test attribute ---------------->', modal.hasAttribute('class', 'show'))
 

@@ -21,13 +21,13 @@ export default class NewBill {
     console.log(e)
     e.preventDefault()
 
-    const MIME_file = this.document.querySelector(`input[data-testid="file"]`).files[0].name.split('.')[1];
-    console.log(MIME_file)
-    const exceptedMime = ['jpg', 'jpeg', 'png'];
+    // const MIME_file = this.document.querySelector(`input[data-testid="file"]`).files[0].name.split('.')[1];
+    // console.log(MIME_file)
+    // const exceptedMime = ['jpg', 'jpeg', 'png'];
 
-    if (!exceptedMime.includes(MIME_file)) {
-      return wrongMime(e.srcElement.value)
-    }
+    // if (!exceptedMime.includes(MIME_file)) {
+    //   return wrongMime(e.srcElement.value)
+    // }
 
     document.getElementById('alertFormat').innerHTML = '';
 
@@ -40,21 +40,21 @@ export default class NewBill {
     formData.append('file', file);
     formData.append('email', email);
 
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true
-        }
-      })
-      .then(({ fileUrl, key }) => {
-        console.log(fileUrl)
-        this.billId = key
-        this.fileUrl = fileUrl
-        this.fileName = fileName
-      })
-      .catch(error => console.error(error))
+    // this.store
+    //   .bills()
+    //   .create({
+    //     data: formData,
+    //     headers: {
+    //       noContentType: true
+    //     }
+    //   })
+    //   .then(({ fileUrl, key }) => {
+    //     console.log(fileUrl)
+    //     this.billId = key
+    //     this.fileUrl = fileUrl
+    //     this.fileName = fileName
+    //   })
+    //   .catch(error => console.error(error))
   }
 
   handleSubmit = e => {
