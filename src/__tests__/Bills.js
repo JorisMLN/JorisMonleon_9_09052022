@@ -9,6 +9,7 @@ import { ROUTES_PATH, ROUTES } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import Bills, { default as BillsContainer } from '../containers/Bills';
 import userEvent from "@testing-library/user-event";
+import mockStore from "../__mocks__/store"
 
 import router from "../app/Router.js";
 
@@ -107,6 +108,64 @@ describe("Given I am connected as an employee", () => {
 
       expect(handleClickEye).toHaveBeenCalled();
       expect(modal.hasAttribute('class', 'show')).toBe(true);
+    })
+  })
+})
+
+// test d'intégration GET
+describe('Given I am user connected as employee', () => {
+  describe('When i navigate to the bills page', () => {
+    test('fetches bills from mock API GET', async () => {
+      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
+
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+
+      window.onNavigate(ROUTES_PATH.Bills);
+
+      await waitFor(() => screen.getByText('Mes notes de frais'));
+      const contentPending = await document.getElementById('data-table');
+      expect(contentPending).toBeTruthy();
+    })
+  })
+
+  describe('When an error occurs on API', () => {
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills")
+      Object.defineProperty(
+        window,
+        'localStorage',
+        { value: localStorageMock }
+      )
+
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee',
+        email: "a@a"
+      }))
+
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.appendChild(root)
+      router()
+    })
+
+    test("fetches bills from an API and fails with 404 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 404"))
+          }
+        }
+      })
+
+      window.onNavigate(ROUTES_PATH.Bills)
+
+      await new Promise(process.nextTick);
+      const message = await screen.getByText(/Erreur/)
+
+      expect(message).toBeTruthy()
     })
   })
 })

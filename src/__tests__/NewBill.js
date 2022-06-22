@@ -35,7 +35,7 @@ describe("Given I am connected as an employee", () => {
       });
 
       const input = screen.getByTestId('file');
-      const file = new File(['test'], {name: 'testFile.jpg'}, {type: 'image/jpg'});
+      const file = new File(['test'], { name: 'testFile.jpg' }, { type: 'image/jpg' });
       const handleChangeFile = jest.fn(container.handleChangeFile);
 
       input.addEventListener('click', handleChangeFile);
@@ -80,4 +80,9 @@ describe("Given I am connected as an employee", () => {
       expect(handleSubmit).toHaveBeenCalled();
     });
   });
+})
+
+// test d'intégration POST
+describe('post', () => {
+
 })
