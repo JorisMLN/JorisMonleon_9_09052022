@@ -10,7 +10,6 @@ export default class NewBill {
     formNewBill.addEventListener("submit", this.handleSubmit)
     const file = this.document.querySelector(`input[data-testid="file"]`)
     file.addEventListener("change", this.handleChangeFile)
-    console.log('file => ', file)
     this.fileUrl = null
     this.fileName = null
     this.billId = null
@@ -18,16 +17,14 @@ export default class NewBill {
   }
 
   handleChangeFile = e => {
-    console.log(e)
     e.preventDefault()
 
-    // const MIME_file = this.document.querySelector(`input[data-testid="file"]`).files[0].name.split('.')[1];
-    // console.log(MIME_file)
-    // const exceptedMime = ['jpg', 'jpeg', 'png'];
+    const MIME_file = this.document.querySelector(`input[data-testid="file"]`).files[0].name.split('.')[1];
+    const exceptedMime = ['jpg', 'jpeg', 'png'];
 
-    // if (!exceptedMime.includes(MIME_file)) {
-    //   return wrongMime(e.srcElement.value)
-    // }
+    if (!exceptedMime.includes(MIME_file)) {
+      return wrongMime(e.srcElement.value)
+    }
 
     document.getElementById('alertFormat').innerHTML = '';
 
@@ -40,21 +37,20 @@ export default class NewBill {
     formData.append('file', file);
     formData.append('email', email);
 
-    // this.store
-    //   .bills()
-    //   .create({
-    //     data: formData,
-    //     headers: {
-    //       noContentType: true
-    //     }
-    //   })
-    //   .then(({ fileUrl, key }) => {
-    //     console.log(fileUrl)
-    //     this.billId = key
-    //     this.fileUrl = fileUrl
-    //     this.fileName = fileName
-    //   })
-    //   .catch(error => console.error(error))
+    this.store
+      .bills()
+      .create({
+        data: formData,
+        headers: {
+          noContentType: true
+        }
+      })
+      .then(({ fileUrl, key }) => {
+        this.billId = key
+        this.fileUrl = fileUrl
+        this.fileName = fileName
+      })
+      .catch(error => console.error(error))
   }
 
   handleSubmit = e => {
@@ -92,8 +88,7 @@ export default class NewBill {
   }
 }
 
-export function wrongMime(value){
-  console.log(value);
+export function wrongMime(value) {
   document.getElementById('alertFormat').innerHTML = `format attendu: jpg, jpeg, png`;
   return value = '';
 }

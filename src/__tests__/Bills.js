@@ -92,19 +92,12 @@ describe("Given I am connected as an employee", () => {
       });
 
       const modal = document.getElementById('modaleFile');
-      console.log(modal);
-
       const eyeButton = screen.getAllByTestId('icon-eye')[0];
-      console.log('first eye btn --------->', eyeButton);
-
       $.fn.modal = jest.fn();
-
 
       const handleClickEye = jest.fn(container.handleClickIconEye);
       eyeButton.addEventListener('click', function () { handleClickEye(eyeButton) });
       userEvent.click(eyeButton);
-
-      console.log('test attribute ---------------->', modal.hasAttribute('class', 'show'))
 
       expect(handleClickEye).toHaveBeenCalled();
       expect(modal.hasAttribute('class', 'show')).toBe(true);
@@ -156,6 +149,23 @@ describe('Given I am user connected as employee', () => {
         return {
           list: () => {
             return Promise.reject(new Error("Erreur 404"))
+          }
+        }
+      })
+
+      window.onNavigate(ROUTES_PATH.Bills)
+
+      await new Promise(process.nextTick);
+      const message = await screen.getByText(/Erreur/)
+
+      expect(message).toBeTruthy()
+    })
+
+    test("fetches bills from an API and fails with 500 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list: () => {
+            return Promise.reject(new Error("Erreur 500"))
           }
         }
       })

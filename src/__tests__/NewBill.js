@@ -2,15 +2,18 @@
  * @jest-environment jsdom
  */
 
-import { screen } from "@testing-library/dom"
+import { screen, waitFor } from "@testing-library/dom"
 import { wrongMime } from "../containers/NewBill.js"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import userEvent from "@testing-library/user-event"
 import { localStorageMock } from "../__mocks__/localStorage.js";
+import { ROUTES_PATH } from "../constants/routes.js";
 import { ROUTES } from "../constants/routes.js";
+import router from "../app/Router"
 
-
+import mockStore from "../__mocks__/store"
+// jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -83,6 +86,45 @@ describe("Given I am connected as an employee", () => {
 })
 
 // test d'intégration POST
-describe('post', () => {
+describe('Given when i am connected as an employee', () => {
+  describe('When i am on the newBill page', () => {
+    beforeEach(() => {
+      jest.spyOn(mockStore, "bills")
+      Object.defineProperty(
+        window,
+        'localStorage',
+        { value: localStorageMock }
+      )
 
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Employee',
+        email: "a@a"
+      }))
+
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.appendChild(root)
+      router()
+    })
+
+
+    test('push bill on the mock API POST', async () => {
+      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
+
+      const mockedBill = mockStore.bills.mockImplementationOnce(() => {
+        return {
+          create: () => {
+            return Promise.resolve()
+          }
+        }
+      })
+
+      console.log('mockedBill ======>', mockedBill);
+
+      window.onNavigate(ROUTES_PATH.NewBill);
+      await waitFor(() => screen.getByText('Envoyer une note de frais'));
+
+      expect(mockedBill).toBeDefined();
+    })
+  })
 })
