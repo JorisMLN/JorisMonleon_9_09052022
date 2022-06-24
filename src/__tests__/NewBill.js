@@ -2,15 +2,14 @@
  * @jest-environment jsdom
  */
 
-import { screen, waitFor } from "@testing-library/dom"
+import { screen } from "@testing-library/dom"
 import { wrongMime } from "../containers/NewBill.js"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import userEvent from "@testing-library/user-event"
 import { localStorageMock } from "../__mocks__/localStorage.js";
-import { ROUTES_PATH } from "../constants/routes.js";
 import { ROUTES } from "../constants/routes.js";
-import router from "../app/Router"
+
 
 import mockStore from "../__mocks__/store"
 // jest.mock("../app/store", () => mockStore)
@@ -38,16 +37,17 @@ describe("Given I am connected as an employee", () => {
       });
 
       const input = screen.getByTestId('file');
-      const file = new File(['test'], { name: 'testFile.jpg' }, { type: 'image/jpg' });
+      const file = new File(['test'], 'testFile.jpg', { type: 'image/jpg' });
       const handleChangeFile = jest.fn(container.handleChangeFile);
 
-      input.addEventListener('click', handleChangeFile);
+      input.addEventListener('change', handleChangeFile);
       userEvent.upload(input, file);
 
       expect(handleChangeFile).toHaveBeenCalled();
     });
 
     test('Then We add a bad Mime type for file', () => {
+      // const badMime = jest.fn(wrongMime);
       // const test = wrongMime() mocker la fonction
       expect(wrongMime('test.pdf')).toBe('')
     })
@@ -88,43 +88,16 @@ describe("Given I am connected as an employee", () => {
 // test d'intégration POST
 describe('Given when i am connected as an employee', () => {
   describe('When i am on the newBill page', () => {
-    beforeEach(() => {
-      jest.spyOn(mockStore, "bills")
-      Object.defineProperty(
-        window,
-        'localStorage',
-        { value: localStorageMock }
-      )
-
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee',
-        email: "a@a"
-      }))
-
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.appendChild(root)
-      router()
-    })
-
-
     test('push bill on the mock API POST', async () => {
       localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "a@a" }));
 
-      const mockedBill = mockStore.bills.mockImplementationOnce(() => {
-        return {
-          create: () => {
-            return Promise.resolve()
-          }
-        }
-      })
+      const mockedBills = mockStore.bills();
 
-      console.log('mockedBill ======>', mockedBill);
+      const spy = jest.spyOn(mockedBills, 'create');
+      const result = await mockedBills.create();
 
-      window.onNavigate(ROUTES_PATH.NewBill);
-      await waitFor(() => screen.getByText('Envoyer une note de frais'));
-
-      expect(mockedBill).toBeDefined();
+      expect(spy).toHaveBeenCalled();
+      expect(result).toEqual({fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234'});
     })
   })
 })
