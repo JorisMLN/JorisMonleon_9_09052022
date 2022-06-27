@@ -1,44 +1,16 @@
 
-## L'architecture du projet :
-Ce projet, dit frontend, est connecté à un service API backend que vous devez aussi lancer en local.
-
-Le projet backend se trouve ici: https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-back
-
-## Organiser son espace de travail :
-Pour une bonne organization, vous pouvez créer un dossier bill-app dans lequel vous allez cloner le projet backend et par la suite, le projet frontend:
-
-Clonez le projet backend dans le dossier bill-app :
-```
-$ git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Back.git
-```
-
-```
-bill-app/
-   - Billed-app-FR-Back
-```
-
-Clonez le projet frontend dans le dossier bill-app :
-```
-$ git clone https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Front.git
-```
-
-```
-bill-app/
-   - Billed-app-FR-Back
-   - Billed-app-FR-Front
-```
-
-## Comment lancer l'application en local ?
+## Billed App
 
 ### étape 1 - Lancer le backend :
 
-Suivez les indications dans le README du projet backend.
+cd billed-app-FR-Back
+node server
 
 ### étape 2 - Lancer le frontend :
 
 Allez au repo cloné :
 ```
-$ cd Billed-app-FR-Front
+$ cd JorisMonleon_9_09052022
 ```
 
 Installez les packages npm (décrits dans `package.json`) :
@@ -76,7 +48,7 @@ $jest src/__tests__/your_test_file.js
 
 ## Comment voir la couverture de test ?
 
-`http://127.0.0.1:8080/coverage/lcov-report/`
+`http://127.0.0.1:5500/`
 
 ## Comptes et utilisateurs :
 
