@@ -76,7 +76,7 @@ describe("Given I am connected as an employee", () => {
       expect(handleClickNewBill).toHaveBeenCalled();
     })
 
-    test('tester le fait que la modale saffiche et que la bonne image est la. Et trigger le click sur icon eye', () => {
+    test('Then I click the function is trigger and the modal become visible', () => {
       const html = BillsUI({ data: bills });
       document.body.innerHTML = html;
 
